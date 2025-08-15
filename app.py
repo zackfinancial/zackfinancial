@@ -8,6 +8,51 @@ import streamlit as st
 st.set_page_config(page_title="Zack Financial — GL Dashboard + Rolling TB", layout="wide")
 st.markdown('<h1 style="text-align:center; font-size:48px; margin:0.2em 0;">Zack Financial</h1>', unsafe_allow_html=True)
 
+# ===== Sample GL download section (centered under header) =====
+def make_sample_gl_bytes() -> BytesIO:
+    """Create a simple, valid GL workbook if no local sample file is present."""
+    df = pd.DataFrame([
+        # seq, Fund, FSLI.1, FSLI.3, GL Account, GL Account Name, reference, description, date, Net amount
+        ["JE00001-1","Fund I","Assets","Cash","1000","Cash","Bank","Initial capital", "2025-01-03", "250,000.00"],
+        ["JE00001-2","Fund I","Equity","Partners' Capital","3000","Partners' Capital","LPs","Initial capital", "2025-01-03", "-250,000.00"],
+        ["JE00002-1","Fund I","Expenses","Management Fees","6100","Management Fees","MGMT CO","January fee", "2025-01-31", "-5,000.00"],
+        ["JE00002-2","Fund I","Assets","Cash","1000","Cash","Bank","January fee", "2025-01-31", "5,000.00"],
+        ["JE00003-1","Fund I","Assets","Investment","1200","Investment - XYZ","XYZ","Initial purchase", "2025-02-05", "-100,000.00"],
+        ["JE00003-2","Fund I","Assets","Cash","1000","Cash","Bank","Initial purchase", "2025-02-05", "100,000.00"],
+    ], columns=["seq","Fund","FSLI.1","FSLI.3","GL Account","GL Account Name","reference","description","date","Net amount"])
+    bio = BytesIO()
+    with pd.ExcelWriter(bio, engine="openpyxl") as w:
+        df.to_excel(w, index=False, sheet_name="GL")
+    bio.seek(0)
+    return bio
+
+def render_sample_download_block():
+    st.markdown(
+        """
+        <div style="text-align:center; margin: 8px 0 18px;">
+          <p style="font-size:18px; margin:0 0 8px;">
+            <strong>Try it now:</strong> Download the sample GL workbook, replace with your data, then re-upload to generate
+            Rolling Trial Balances and financial statements.
+          </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    sample_path = "GL_sample_data.xlsx"  # place a real sample here if you want
+    label = "Download sample GL file (Excel)"
+    mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+    if os.path.exists(sample_path):
+        with open(sample_path, "rb") as f:
+            st.download_button(label, data=f, file_name="GL_sample_data.xlsx", mime=mime, use_container_width=True)
+    else:
+        sample_bytes = make_sample_gl_bytes()
+        st.download_button(label, data=sample_bytes, file_name="GL_sample_data.xlsx", mime=mime, use_container_width=True)
+
+render_sample_download_block()
+# ===============================================================
+
 # Expected GL headers (case/space-insensitive match handled later)
 EXPECTED = [
     "seq","Fund","FSLI.1","FSLI.3","GL Account","GL Account Name",
