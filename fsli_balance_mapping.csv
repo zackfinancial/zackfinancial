@@ -1,0 +1,11 @@
+FSLI.1,FSLI.3,Section,Line,NormalSign,Order
+Cash,,Assets,Cash & Cash Equivalents,1,10
+Receivables,,Assets,Accounts Receivable,1,20
+Prepaid,,Assets,Prepaid Items,1,30
+Inventory,,Assets,Inventory,1,40
+Capital,,Assets,Capital Assets (Net),1,100
+Payables,,Liabilities,Accounts Payable,-1,200
+Accrued,,Liabilities,Accrued Liabilities,-1,210
+Debt,,Liabilities,Long-Term Debt,-1,300
+Other Liabilities,,Liabilities,Other Liabilities,-1,400
+Equity,,Equity,Fund Balance / Equity,-1,500

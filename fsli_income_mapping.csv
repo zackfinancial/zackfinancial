@@ -1,0 +1,13 @@
+FSLI.1,FSLI.3,Statement,Line,Sign,Order
+Revenue,,Income Statement,Taxes & Fees,1,10
+Revenue,Grants,Income Statement,Grants,1,20
+Revenue,Charges for Services,Income Statement,Service Charges,1,30
+Personnel,,Income Statement,Salaries & Wages,-1,100
+Benefits,,Income Statement,Employee Benefits,-1,110
+Operating,Utilities,Income Statement,Utilities,-1,200
+Operating,Supplies,Income Statement,Supplies,-1,210
+Operating,Maintenance,Income Statement,Maintenance,-1,220
+Capital,,Income Statement,Capital Outlay,-1,300
+Debt Service,Principal,Income Statement,Debt Principal,-1,400
+Debt Service,Interest,Income Statement,Debt Interest,-1,410
+Other,Non-Operating,Income Statement,Other Income/Expense,1,500
