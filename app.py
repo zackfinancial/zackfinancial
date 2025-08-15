@@ -152,6 +152,31 @@ def dashboard_view(df):
     show_cols = [c for c in ["Date","Amount","Fund","FSLI.1","FSLI.3","GL Account","GL Account Name","reference","description","seq"] if c in df.columns]
     display_df_with_formats(df[show_cols], currency_cols=["Amount"], date_cols=["Date"])
 
+from io import BytesIO
+
+def transactions_download_button(df):
+    # choose a friendly column order if present
+    preferred = ["Date","Amount","Fund","FSLI.1","FSLI.3","GL Account","GL Account Name","reference","description","seq"]
+    cols = [c for c in preferred if c in df.columns]
+    out = df.copy()
+    # export numeric & date values (no pretty formatting)
+    if "Date" in out.columns:
+        out["Date"] = pd.to_datetime(out["Date"], errors="coerce")
+    if "Amount" in out.columns:
+        out["Amount"] = pd.to_numeric(out["Amount"], errors="coerce")
+    bio = BytesIO()
+    with pd.ExcelWriter(bio, engine="openpyxl") as w:
+        out[cols].to_excel(w, index=False, sheet_name="Transactions_Filtered")
+    bio.seek(0)
+    st.download_button(
+        "Download filtered transactions (Excel)",
+        data=bio,
+        file_name="Transactions_Filtered.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        use_container_width=True
+    )
+
+
 def trial_balance_view(df):
     st.subheader("Rolling Monthly Trial Balance (Cumulative)")
 
@@ -213,7 +238,6 @@ def trial_balance_view(df):
 
 def main():
     st.sidebar.title("Load GL")
-    st.sidebar.caption("Tip: set a custom logo URL by adding `logo_url` to `.streamlit/secrets.toml`.")
     up = st.sidebar.file_uploader("Upload Excel (.xlsx) containing a 'GL' sheet", type=["xlsx"])
     if up is None:
         st.info("Upload your GL workbook (we'll use the 'GL' tab if present, or the first sheet).")
@@ -226,7 +250,7 @@ def main():
         return
 
     df = prepare(raw)
-    st.caption(f"Sheet used: **{sheet}** | Rows loaded: **{len(df):,}**")
+    st.caption(f"Sheet used: **{sheet}** | Rows loaded: **{len(df):,}**")transactions_download_button(fdf)
 
     # Filters
     st.sidebar.header("Filters (roles)")
